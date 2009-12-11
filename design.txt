@@ -1,0 +1,28 @@
+<bh> So we have:
+<bh> *Imperial Destroyer*          *Biopod Ship*
+<bh>  (Or somename like that)
+<bh> (2) Laser Beams                (1) Caustic Bile Projector
+<bh> (2) Nuclear Missles            (2) Explosive Spore Launchers
+<bh> So lets say that the LBs are 1 damage, hit 75
+<bh> NM are 2 dam, More hit or less?
+<bh>   Less?  Say 60%?
+<2795600> 60 sounds good
+<bh> Then we hace the CBP, which should be hard ti hit, say Damage 4 Hit 40%
+<bh> Then the ESLs with are 90% Damage 1
+<bh> Say that the ImpDes is equal, maybe 10 shields and 10 hull?
+<bh> And the Biopod has a weaker bioelectric field and is 5 shields, and 20 hull
+<bh> But the Imp Des recharges 1 point a turn, to make up for its total loss of 5 points in shield/hull.
+<bh> So lets for now say that the ImpDes has a MvRating of 2, and the Biopod has a mv of 3
+<bh> Point Blank, Short, Medium, Long, Extreme
+<bh> The mods are perhaps +30, +15, 0, -20, -40
+<bh> Lets say something simple, like up to 50% hull damage, any hit has a flat 10% of nailing a component (basically a weapon)
+<bh> from 51%-75% it's 20%
+<bh> from 76-100 it's 30%
+<bh> Well, 76-99%
+<bh> Then at 100 it's 100% for all weapons. :)
+<2795600> you have advance, maintain, hold, and retreat?
+<2795600> ok, imps go to medium, bugs go to point blank
+One is an easy way to try out totally different designs, ect, and the second is more ships, and the third is how to make movement a) work better with more then 2 ships, and b) make a differencre.
+Also, more info on the full5000 would be needed
+I was thinking of adding instrumentation to determine if battles were lost to hull failure or weapon loss
+and maybe average range
