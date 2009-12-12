@@ -345,12 +345,34 @@ int Ship::alive(void)
    return((hull > 0) && (numWeapons > 0));
 }
 
+#define DEAD_ENEMY_SHIELDS -1
+#define DEAD_NO_HULL       -2
+#define DEAD_NO_WEAP       -3
+
+///@return code for how we died, 0 if alive
+int Ship::dead(void)
+{
+   int ret_val= 0;
+
+   if(race == 'B' && numWeapons == 1 && weapons[0].damage == 1)
+      return(DEAD_ENEMY_SHIELDS);
+
+   if( hull <= 0 )
+      return(DEAD_NO_HULL);
+
+   if( numWeapons <= 0 )
+      return(DEAD_NO_WEAP);
+
+   return(ret_val);
+}
+
 // fight this ship against w
 int Ship::fight(Ship  &w)
 {
    Range r;
+	int round = 0;
 
-   while(alive() && w.alive())
+   while(!dead() && !w.dead())
    {
 #ifdef DEBUG
 printf("\n\tRound\n");
@@ -362,11 +384,32 @@ printf("\n\tRound\n");
 
       repair();
       w.repair();
-   }
 
-   if(alive()) return(1);   // we win
-   if(w.alive()) return(0); // opponent wins
-   return(-1);              // draw
+		++round;
+   }
+	a.sumRounds += round;
+
+	int ret_val = -1;
+   if(!dead()) ret_val= 1; // we win
+   else // cause of death
+      if( dead() == DEAD_ENEMY_SHIELDS )
+         a.impsShieldRegen++;
+      else
+      if( dead() == DEAD_NO_HULL )
+         a.bugsNoHull++;
+      else
+      if( dead() == DEAD_NO_WEAP )
+         a.bugsNoWeap++;
+
+   if(!w.dead()) ret_val= 0; // opponent wins
+   else
+      if( w.dead() == DEAD_NO_HULL )
+         a.impsNoHull++;
+      else
+      if( w.dead() == DEAD_NO_WEAP )
+         a.impsNoWeap++;
+
+   return ret_val;
 }
 
 // use simultaneous fire
@@ -454,6 +497,9 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
          mod = -40;
          break;
    }
+#ifdef DEBUG
+if(oldr != cur) printf("Moved:%d\n", cur);
+#endif
 }
 
 void Battle::reset(void)
