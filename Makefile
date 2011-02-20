@@ -1,7 +1,7 @@
 .PHONY: all clean test
 
 BIN := sbattle.exe
-SRC := class.cpp sim.cpp
+SRC := class.cpp ship.cpp sim.cpp
 OBJ := $(SRC:.cpp=.o)
 DEP := $(SRC:.cpp=.d)
 

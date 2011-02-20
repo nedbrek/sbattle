@@ -5,7 +5,6 @@
 
 struct Hit;
 class  Range;
-struct Ship;
 
 // any one weapon
 struct Weapon
