@@ -4,6 +4,7 @@
 // class members
 
 #include "sim.h"
+#include "range.h"
 
 // Imperial Destroyer stats
 #define IMP_N "Imperial Destroyer"
@@ -167,7 +168,7 @@ void Ship::fire(Range  &r, Hit *ghit)
    for(i = 0; i < numWeapons; i++)
    {
      hitMask <<= 1;
-     if(rand() % 100 < (weapons[i].hit + r.mod))
+     if(rand() % 100 < (weapons[i].hit + r.mod()))
      {
         hits++;
         // set this weapon's hit bit to on
@@ -331,8 +332,8 @@ int Ship::plan(Range  &r)
 
             }*/
             // imps go to medium
-            if(r.cur == RANGE_EXTR) return(RANGE_ADVN);
-            if(r.cur == RANGE_LONG) return(RANGE_HOLD);
+            if(r.cur() == RANGE_EXTR) return(RANGE_ADVN);
+            if(r.cur() == RANGE_LONG) return(RANGE_HOLD);
             return(RANGE_MNTN);
    }
    return(-1);
@@ -442,7 +443,7 @@ printf("\n\t\tboom ship2\t");
 void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 {
    int moves = s1.move + s2.move;
-//int oldr = cur;
+//int oldr = cur_;
 //if(moves == 0) printf("What?????!\n");
 //fflush(stdout);
    int result, success, upd = 0;
@@ -475,30 +476,30 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 
    if(success == 2) upd = 0;
 
-   cur += upd;
-   if(cur > RANGE_EXTR) cur = RANGE_EXTR;
-   if(cur < RANGE_PTBK) cur = RANGE_PTBK;
-//if(oldr != cur) printf("Moved:%d\t", cur);
-   switch(cur)
+   cur_ = Range_Q(int(cur_) + upd);
+   if(cur_ > RANGE_EXTR) cur_ = RANGE_EXTR;
+   if(cur_ < RANGE_PTBK) cur_ = RANGE_PTBK;
+//if(oldr != cur_) printf("Moved:%d\t", cur_);
+   switch(cur_)
    {
       case RANGE_PTBK:
-         mod = 30;
+         mod_ = 30;
          break;
       case RANGE_SHRT:
-         mod = 15;
+         mod_ = 15;
          break;
       case RANGE_MEDM:
-         mod = 0;
+         mod_ = 0;
          break;
       case RANGE_LONG:
-         mod = -20;
+         mod_ = -20;
          break;
       case RANGE_EXTR:
-         mod = -40;
+         mod_ = -40;
          break;
    }
 #ifdef DEBUG
-if(oldr != cur) printf("Moved:%d\n", cur);
+if(oldr != cur_) printf("Moved:%d\n", cur_);
 #endif
 }
 

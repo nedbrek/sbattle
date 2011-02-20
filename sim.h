@@ -12,19 +12,14 @@
 
 #include <list>
 
+class Range;
+
 //#define DEBUG
 #ifdef DEBUG
 #define TRIALS 1
 #else
 #define TRIALS 5000
 #endif
-
-// Range values
-#define RANGE_PTBK 1
-#define RANGE_SHRT 2
-#define RANGE_MEDM 3
-#define RANGE_LONG 4
-#define RANGE_EXTR 5
 
 // Range actions
 #define RANGE_ADVN 1
@@ -85,18 +80,6 @@ struct Analysis
 
 extern Analysis a;
 
-// effective range of all ships
-struct Range
-{
-   int cur;
-   int mod;
-
-   // start at extreme
-   Range(void): cur(RANGE_EXTR), mod(-40) {}
-   // move according to plans
-   void update(int p1, int p2, Ship &s1, Ship &s2);
-};
-
 // any one weapon
 struct Weapon
 {
@@ -151,9 +134,9 @@ struct Ship
    int fight(Ship  &w);
    int dead(void);
    int alive(void);
-   int plan(Range  &r);
+   int plan(Range &r);
    void repair(void);
-   void fire(Range  &r, Hit *ghit);
+   void fire(Range &r, Hit *ghit);
    void damage(Hit *dam);
    void destroy_weapon(int which);
    void reset(void);
