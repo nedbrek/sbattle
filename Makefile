@@ -1,10 +1,22 @@
 .PHONY: all clean
 
-all: sbattle.exe
+BIN := sbattle.exe
+SRC := class.cpp sim.cpp
+OBJ := $(SRC:.cpp=.o)
+DEP := $(SRC:.cpp=.d)
 
-sbattle.exe: class.o sim.o
+-include $(DEP)
+
+CXXFLAGS := -MP -MMD -Wall
+
+all: $(BIN)
+
+.cpp.o:
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(BIN): $(OBJ)
 	@g++ -Wall -o $@ $^
 
 clean:
-	@rm -f sbattle.exe *.o
+	@rm -f $(BIN) $(OBJ)
 
