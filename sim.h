@@ -5,12 +5,15 @@
 // Simulation of space battles
 // header file, definitions and classes
 
+#include "ship.h"
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
 #include <ctime>
 
 #include <list>
+
+typedef std::list<Ship> Force;
 
 class Range;
 
@@ -80,13 +83,6 @@ struct Analysis
 
 extern Analysis a;
 
-// any one weapon
-struct Weapon
-{
-   int damage;
-   int hit;
-};
-
 // stack of damage packets
 struct Hit
 {
@@ -112,40 +108,6 @@ public:
       delete[] damage;
    }
 };
-
-// a ship
-struct Ship
-{
-   char race;
-   char *name;
-   int numWeapons;
-   Weapon *weapons;
-   int shields;
-   int hull;
-   int move;
-
-   ~Ship()
-   {
-      delete[] name;
-//      if(weapons) delete[] weapons;
-   }
-
-   Ship(char t);
-   int fight(Ship  &w);
-   int dead(void);
-   int alive(void);
-   int plan(Range &r);
-   void repair(void);
-   void fire(Range &r, Hit *ghit);
-   void damage(Hit *dam);
-   void destroy_weapon(int which);
-   void reset(void);
-
-private:
-   void evalFire(Range &r, Ship &s2);
-};
-
-typedef std::list<Ship> Force;
 
 struct Battle
 {

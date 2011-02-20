@@ -135,7 +135,7 @@ void Ship::reset(void)
             weapons[2].hit = 95;
             shields = BUG_S_MAX;
             hull = BUG_H_MAX;
-            move = BUG_MOVE;
+            move_ = BUG_MOVE;
          break;
       case 'I':
       case 'i':
@@ -153,7 +153,7 @@ void Ship::reset(void)
             weapons[3].hit = 65;
             shields = IMP_S_MAX;
             hull = IMP_H_MAX;
-            move = IMP_MOVE;
+            move_ = IMP_MOVE;
          break;
    }
 }
@@ -442,7 +442,8 @@ printf("\n\t\tboom ship2\t");
 //--------------------- range, the distance between the fighters
 void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 {
-   int moves = s1.move + s2.move;
+   int moves = s1.move() + s2.move();
+
 //int oldr = cur_;
 //if(moves == 0) printf("What?????!\n");
 //fflush(stdout);
@@ -461,14 +462,14 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
    if(result & RESULTS_OP1)
    {
       success = 2; // check for double failure
-      success |= rand() % 100 < ((s1.move / (double)moves) * 100);
-      success &= rand() % 100 >= ((s2.move / (double)moves) * 100);
+      success |= rand() % 100 <  ((s1.move() / (double)moves) * 100);
+      success &= rand() % 100 >= ((s2.move() / (double)moves) * 100);
    }
    if(result & !RESULTS_OP1)
    {
       success = 2; // check for double failure
-      success |= rand() % 100 < ((s2.move / (double)moves) * 100);
-      success &= rand() % 100 >= ((s1.move / (double)moves) * 100);
+      success |= rand() % 100 <  ((s2.move() / (double)moves) * 100);
+      success &= rand() % 100 >= ((s1.move() / (double)moves) * 100);
    }
 
    if(success && (result & RESULTS_ADD)) upd = -1;
