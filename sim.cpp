@@ -13,13 +13,20 @@ void setup(char *f)
 
 int main(int argc, char **argv)
 {
-   time_t ti;
-   srand((unsigned) time(&ti));
+   if( argc != 2 && argc != 3 )
+	{
+      printf("Usage: %s [--test] <battleFile>\n", argv[0]);
 
-   if(argc != 2)
-      printf("Usage: %s <battleFile>\n", argv[0]);
+   	return 1;
+	}
 
-   setup(argv[1]);
+	if( strcmp(argv[1], "--test") != 0 )
+	{
+   	time_t ti;
+   	srand((unsigned) time(&ti));
+
+   	setup(argv[1]);
+	}
 
    for(int i = 0; i < TRIALS; i++)
    {
