@@ -497,6 +497,9 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
       case RANGE_EXTR:
          mod_ = -40;
          break;
+
+		default:
+			assert(false);
    }
 #ifdef DEBUG
 if(oldr != cur_) printf("Moved:%d\n", cur_);
