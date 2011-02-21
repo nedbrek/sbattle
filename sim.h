@@ -46,7 +46,7 @@ struct Analysis
       if( t == 1 ) ++bugsWin;
    }
 
-	void print(void);
+	void print(int numTrials) const;
 };
 
 extern Analysis a;
@@ -88,6 +88,8 @@ protected:
 
 public:
 	Battle(void);
+
+	void initDefault(void);
 
    void reset(void);
 

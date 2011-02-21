@@ -142,6 +142,10 @@ void Hit::add(int d)
 //----------------------------------------------------------------------------
 Battle::Battle(void)
 {
+}
+
+void Battle::initDefault(void)
+{
 	std::list<Ship> tmp;
 	tmp.push_back(Ship('I'));
 	forces.push_back(tmp);

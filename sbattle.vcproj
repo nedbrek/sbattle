@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ship.cpp"
 				>
 			</File>

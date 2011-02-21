@@ -14,7 +14,7 @@ CXXFLAGS := -MP -MMD -Wall
 .cpp.o:
 	@$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(BIN): $(OBJ)
+$(BIN): $(OBJ) main.o
 	@g++ -Wall -o $@ $^
 
 test: $(BIN)
