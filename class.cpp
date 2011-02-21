@@ -6,35 +6,97 @@
 #include "sim.h"
 #include "range.h"
 
-// results:
-// success 0
-// roll    1 (implies oppose)
-#define RESULTS_SCS 1
+namespace Results {
+enum Val
+{
+	CLOSE            = 0,
+	CLOSE_ROLL_P1    = 1, // close if P1 better than P2
+	CLOSE_ROLL_P2    = 2, // close if P2 better than P1
+	NO_CHANGE        = 4,
+	WITHDRAW_ROLL_P1 = 5, // withdraw if P1 better than P2
+	WITHDRAW_ROLL_P2 = 6, // withdraw if P2 better than P1
+	WITHDRAW         = 8,
+	MAX
+};
+	bool needRoll(Val v)
+	{
+		return (v & 3) != 0;
+	}
+
+	int delta(Val v)
+	{
+		switch( v )
+		{
+		case CLOSE:
+			return -1;
+
+		case NO_CHANGE:
+			return 0;
+
+		case WITHDRAW:
+			return 1;
+
+		case CLOSE_ROLL_P1:
+		case WITHDRAW_ROLL_P1:
+		case WITHDRAW_ROLL_P2:
+		case CLOSE_ROLL_P2:
+		case MAX:
+			;
+		}
+		assert( false && "Unresolved result" );
+		return 0;
+	}
+
+	Val resolveRoll(Val v, bool p1Success)
+	{
+		switch( v )
+		{
+		case CLOSE:
+		case NO_CHANGE:
+		case WITHDRAW:
+			return v; // no roll need
+
+		case CLOSE_ROLL_P1:
+		case WITHDRAW_ROLL_P1:
+			if( p1Success )
+				return Val(int(v) - 1);
+
+			return NO_CHANGE;
+
+		case WITHDRAW_ROLL_P2:
+		case CLOSE_ROLL_P2:
+			if( p1Success )
+				return NO_CHANGE;
+
+			return Val(int(v) - 2);
+
+		case MAX:
+			;
+		}
+		assert( false );
+		return MAX;
+	}
+}
 
 // results possibilities
-// add 1                   0
-// subtract 1              2
-// oppose, p1 rush p2 fall 4
-// oppose, p2 rush p1 fall 6
-// use 0, 2, 4, 5, 7
-static int results[16] = {
+static Results::Val results[16] = {
 // result   P1   P2
-   0+2, // ADVN ADVN -> automatic success (0) + subtract 1 (2)
-	1+4, // ADVN MNTN -> roll  for success (1) + oppose p1 rush (4)
-	0+2, // ADVN HOLD -> automatic success (0) + subtract 1 (2)
-	1+4, // ADVN RTRT -> roll  for success (1) + oppose p1 rush (4)
-   1+6, // MNTN ADVN -> roll  for success (1) + oppose p2 rush (6)
-	0+4, // MNTN MNTN -> automatic success (0) + oppose p1 rush (4)
-	0+4, // MNTN HOLD -> automatic success (0) + oppose p1 rush (4)
-	1+4, // MNTN RTRT -> roll  for success (1) + oppose p1 rush (4)
-   0+2, // HOLD ADVN -> automatic success (0) + subtract 1 (2)
-	0+4, // HOLD MNTN -> automatic success (0) + oppose p1 rush (4)
-	0+4, // HOLD HOLD -> automatic success (0) + oppose p1 rush (4)
-	0+0, // HOLD RTRT -> automatic success (0) + add 1 (0)
-   1+6, // RTRT ADVN -> roll  for success (1) + oppose p2 rush (6)
-	1+6, // RTRT MNTN -> roll  for success (1) + oppose p2 rush (6)
-	0+0, // RTRT HOLD -> automatic success (0) + add 1 (0)
-	0+0  // RTRT RTRT -> automatic success (0) + add 1 (0)
+	Results::CLOSE,            // ADVN ADVN -> automatic success + subtract 1
+	Results::CLOSE_ROLL_P1,    // ADVN MNTN -> roll  for success + oppose p1 rush
+	Results::CLOSE,            // ADVN HOLD -> automatic success + subtract 1
+	Results::CLOSE_ROLL_P1,    // ADVN RTRT -> roll  for success + oppose p1 rush
+   Results::CLOSE_ROLL_P2,    // MNTN ADVN -> roll  for success + oppose p2 rush
+	Results::NO_CHANGE,        // MNTN MNTN -> automatic success + no move
+	Results::NO_CHANGE,        // MNTN HOLD -> automatic success + no move
+	Results::WITHDRAW_ROLL_P2, // MNTN RTRT -> roll  for success + oppose p2 rush
+   Results::CLOSE,            // HOLD ADVN -> automatic success + subtract 1
+	Results::NO_CHANGE,        // HOLD MNTN -> automatic success + no move
+	Results::NO_CHANGE,        // HOLD HOLD -> automatic success + no move
+	Results::WITHDRAW,         // HOLD RTRT -> automatic success + add 1
+   Results::NO_CHANGE,        // RTRT ADVN -> automatic success + no move
+	Results::WITHDRAW_ROLL_P1, // RTRT MNTN -> roll  for success + oppose p1 rush
+	Results::WITHDRAW,         // RTRT HOLD -> automatic success + add 1
+	Results::WITHDRAW          // RTRT RTRT -> automatic success + add 1
 };
 
 #define RESULTS_ADD 2
@@ -51,27 +113,15 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 
    --p1;
    --p2;
-   int result = results[((p1 & 3) << 2) | (p2 & 3)];
+   Results::Val result = results[((p1 & 3) << 2) | (p2 & 3)];
 
-	int success = ~(result & RESULTS_SCS); // automatic success
-   if(result & RESULTS_OP1)
-   {
-      success = 2; // check for double failure
-      success |= rand() % 100 <  ((s1.move() / (double)moves) * 100);
-      success &= rand() % 100 >= ((s2.move() / (double)moves) * 100);
-   }
-   if(result & !RESULTS_OP1)
-   {
-      success = 2; // check for double failure
-      success |= rand() % 100 <  ((s2.move() / (double)moves) * 100);
-      success &= rand() % 100 >= ((s1.move() / (double)moves) * 100);
-   }
+	if( Results::needRoll(result) )
+	{
+		const bool p1Success = rand() % 100 < ((s1.move() / (double)moves) * 100);
+		result = Results::resolveRoll(result, p1Success);
+	}
 
-   int upd = 0;
-   if(success && (result & RESULTS_ADD)) upd = -1;
-   if(success && !(result & RESULTS_ADD)) upd = 1;
-
-   if(success == 2) upd = 0;
+	const int upd = Results::delta(result);
 
    cur_ = Range_Q(int(cur_) + upd);
    if(cur_ > RANGE_EXTR) cur_ = RANGE_EXTR;
