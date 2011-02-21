@@ -5,7 +5,7 @@
 
 // Imperial Destroyer stats
 #define IMP_N "Imperial Destroyer"
-#define IMP_W_NUM 4
+#define IMP_W_NUM 3
 #define IMP_S_MAX 10
 #define IMP_H_MAX 10
 #define IMP_MOVE  2
@@ -72,11 +72,9 @@ void Ship::reset(void)
             weapons[0].damage = 1;
             weapons[1].damage = 1;
             weapons[2].damage = 2;
-            weapons[3].damage = 2;
             weapons[0].hit = 75;
             weapons[1].hit = 75;
-            weapons[2].hit = 0;
-            weapons[3].hit = 65;
+            weapons[2].hit = 65;
             shields = IMP_S_MAX;
             hull = IMP_H_MAX;
             move_ = IMP_MOVE;
