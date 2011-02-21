@@ -25,56 +25,29 @@ enum Val
 
 	int delta(Val v)
 	{
-		switch( v )
-		{
-		case CLOSE:
-			return -1;
+		assert( !needRoll(v) );
 
-		case NO_CHANGE:
-			return 0;
-
-		case WITHDRAW:
-			return 1;
-
-		case CLOSE_ROLL_P1:
-		case WITHDRAW_ROLL_P1:
-		case WITHDRAW_ROLL_P2:
-		case CLOSE_ROLL_P2:
-		case MAX:
-			;
-		}
-		assert( false && "Unresolved result" );
-		return 0;
+		return (v >> 2) - 1;
 	}
 
 	Val resolveRoll(Val v, bool p1Success)
 	{
-		switch( v )
-		{
-		case CLOSE:
-		case NO_CHANGE:
-		case WITHDRAW:
+		if( !needRoll(v) )
 			return v; // no roll need
 
-		case CLOSE_ROLL_P1:
-		case WITHDRAW_ROLL_P1:
+		if( (v & 1) )
+		{
 			if( p1Success )
 				return Val(int(v) - 1);
-
-			return NO_CHANGE;
-
-		case WITHDRAW_ROLL_P2:
-		case CLOSE_ROLL_P2:
-			if( p1Success )
-				return NO_CHANGE;
-
-			return Val(int(v) - 2);
-
-		case MAX:
-			;
 		}
-		assert( false );
-		return MAX;
+		else
+		{
+			assert( v & 2 );
+			if( !p1Success )
+				return Val(int(v) - 2);
+		}
+
+		return NO_CHANGE;
 	}
 }
 
@@ -99,9 +72,6 @@ static Results::Val results[16] = {
 	Results::WITHDRAW          // RTRT RTRT -> automatic success + add 1
 };
 
-#define RESULTS_ADD 2
-#define RESULTS_OP1 4
-
 //--------------------- range, the distance between the fighters
 void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 {
@@ -122,6 +92,7 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
 	}
 
 	const int upd = Results::delta(result);
+	if( !upd ) return;
 
    cur_ = Range_Q(int(cur_) + upd);
    if(cur_ > RANGE_EXTR) cur_ = RANGE_EXTR;
