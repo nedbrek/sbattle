@@ -25,12 +25,10 @@ class Range;
 #endif
 
 // Range actions
-#define RANGE_ADVN 1
-#define RANGE_MNTN 2
-#define RANGE_HOLD 3
-#define RANGE_RTRT 4
-
-struct Ship;
+const int RANGE_ADVN= 1; // advance
+const int RANGE_MNTN= 2; // maintain current range (counter-maneuver)
+const int RANGE_HOLD= 3; // hold position (don't move)
+const int RANGE_RTRT= 4; // retreat/disengage
 
 struct Analysis
 {

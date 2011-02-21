@@ -18,15 +18,17 @@
 #define BUG_H_MAX 20
 #define BUG_MOVE  3
 
-void nedprint(unsigned mask)
+#ifdef DEBUG
+static void nedprint(unsigned mask)
 {
-   for(int i=16; i > 0; --i)
+   for(int i= 16; i > 0; --i)
    {
       if(mask & 32768) printf("1");
       else printf("0");
       mask <<= 1;
    }
 }
+#endif
 
 //----------------------------------------------------------------------------
 Ship::Ship(char t)
@@ -120,7 +122,7 @@ printf("\t");
          ++i;
 
 if(weapons[w].damage > 5)
-printf("Built: %d %d %d", w, i, weapons[w].damage);
+printf("Built: %d %d %d\n", w, i, weapons[w].damage);
       }
 
       hitMask >>= 1;
@@ -141,7 +143,7 @@ printf("got:%d ", which);
 // perform end of round adjustments
 void Ship::repair(void)
 {
-   switch(race)
+   switch( race )
    {
       case 'I':
       case 'i':
@@ -164,7 +166,8 @@ void Ship::damage(Hit *dam)
       case 'b':
          hullMax = BUG_H_MAX;
          break;
-      case 'I':
+
+		case 'I':
       case 'i':
          hullMax = IMP_H_MAX;
          break;
@@ -211,11 +214,11 @@ printf("bang: %d\t", crit);
    }
 
    // check for shield underflow
-   if(shields < 0)
+   if( shields < 0 )
    {
       hull += shields;
       shields = 0;
-      if( ((rand() % 100) < crit) && numWeapons)
+      if( ((rand() % 100) < crit) && numWeapons )
       {
 #ifdef DEBUG
 printf("bang: %d\t", crit);
@@ -233,7 +236,7 @@ printf("Hull:%d Shields:%d\n",hull, shields);
 // plan movement for this turn
 int Ship::plan(Range  &r)
 {
-   switch(race)
+   switch( race )
    {
       case 'B':
       case 'b':
@@ -260,7 +263,8 @@ int Ship::plan(Range  &r)
 int Ship::alive(void)
 {
    if(race == 'B' && numWeapons < 2 && weapons[0].damage == 1) return(0);
-   return((hull > 0) && (numWeapons > 0));
+
+	return((hull > 0) && (numWeapons > 0));
 }
 
 #define DEAD_ENEMY_SHIELDS -1
@@ -270,8 +274,6 @@ int Ship::alive(void)
 ///@return code for how we died, 0 if alive
 int Ship::dead(void)
 {
-   int ret_val= 0;
-
    if(race == 'B' && numWeapons == 1 && weapons[0].damage == 1)
       return(DEAD_ENEMY_SHIELDS);
 
@@ -281,16 +283,16 @@ int Ship::dead(void)
    if( numWeapons <= 0 )
       return(DEAD_NO_WEAP);
 
-   return(ret_val);
+   return(0);
 }
 
 // fight this ship against w
-int Ship::fight(Ship  &w)
+int Ship::fight(Ship &w)
 {
    Range r;
 	int round = 0;
 
-   while(!dead() && !w.dead())
+   while( !dead() && !w.dead() )
    {
 #ifdef DEBUG
 printf("\n\tRound\n");
