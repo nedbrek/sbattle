@@ -1,0 +1,16 @@
+{
+	"force1" : {
+		"name" : "Imperials",
+		"ships" : [
+			"idest"
+		]
+	},
+
+	"force2" : {
+		"name" : "Bugs",
+		"ships" : [
+			"bship"
+		]
+	}
+}
+
