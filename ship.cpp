@@ -73,7 +73,7 @@ void Ship::reset(void)
             weapons = new(Weapon[numWeapons]);
             weapons[0].damage = 1;
             weapons[1].damage = 1;
-            weapons[2].damage = 2;
+            weapons[2].damage = 3;
             weapons[0].hit = 75;
             weapons[1].hit = 75;
             weapons[2].hit = 65;

@@ -1,7 +1,7 @@
-Imps: 1472 	 Bugs: 2982, Draws: 546
-Imps lost due to hull failure: 3521
-Imps lost due to weapons failure: 7
-Bugs lost due to hull failure: 358
-Bugs lost due to weapons failure: 543
-Bugs lost due to weapons unable to breach enemy shields: 1117
-Total number of rounds fought:28861 Average: 5.772200
+Imps: 2171 	 Bugs: 2146, Draws: 683
+Imps lost due to hull failure: 2823
+Imps lost due to weapons failure: 6
+Bugs lost due to hull failure: 1148
+Bugs lost due to weapons failure: 459
+Bugs lost due to weapons unable to breach enemy shields: 1247
+Total number of rounds fought:27643 Average: 5.528600
