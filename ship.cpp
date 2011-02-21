@@ -1,5 +1,4 @@
-// implementation of ship class
-
+/// implementation of ship class
 #include "sim.h"
 #include "range.h"
 
@@ -38,6 +37,33 @@ Ship::Ship(char t)
    weapons = NULL;
 
    reset();
+}
+
+Ship::Ship(const Ship &b)
+{
+	operator=(b);
+}
+
+Ship& Ship::operator=(const Ship &b)
+{
+   race  = b.race;
+   name  = strdup(b.name);
+   move_ = b.move_;
+
+   numWeapons = b.numWeapons;
+   weapons = new Weapon[numWeapons];
+	memcpy(weapons, b.weapons, sizeof(Weapon) * numWeapons);
+
+   shields = b.shields;
+	hull    = b.hull;
+
+	return *this;
+}
+
+Ship::~Ship(void)
+{
+	delete[] name;
+	delete[] weapons;
 }
 
 // default weapons and armor
@@ -234,7 +260,7 @@ printf("Hull:%d Shields:%d\n",hull, shields);
 }
 
 // plan movement for this turn
-int Ship::plan(Range  &r)
+int Ship::plan(Range &r) const
 {
    switch( race )
    {
@@ -260,11 +286,11 @@ int Ship::plan(Range  &r)
 }
 
 // is this ship alive
-int Ship::alive(void)
+bool Ship::alive(void) const
 {
    if(race == 'B' && numWeapons < 2 && weapons[0].damage == 1) return(0);
 
-	return((hull > 0) && (numWeapons > 0));
+	return( hull > 0 && numWeapons > 0 );
 }
 
 #define DEAD_ENEMY_SHIELDS -1
@@ -272,7 +298,7 @@ int Ship::alive(void)
 #define DEAD_NO_WEAP       -3
 
 ///@return code for how we died, 0 if alive
-int Ship::dead(void)
+int Ship::dead(void) const
 {
    if(race == 'B' && numWeapons == 1 && weapons[0].damage == 1)
       return(DEAD_ENEMY_SHIELDS);

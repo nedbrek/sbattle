@@ -5,7 +5,9 @@
 
 #include "sim.h"
 #include "range.h"
+#include <cassert>
 
+//----------------------------------------------------------------------------
 namespace Results {
 enum Val
 {
@@ -51,6 +53,7 @@ enum Val
 	}
 }
 
+//----------------------------------------------------------------------------
 // results possibilities
 static Results::Val results[16] = {
 // result   P1   P2
@@ -99,16 +102,15 @@ void Range::update(int p1, int p2, Ship  &s1, Ship  &s2)
    if(cur_ < RANGE_PTBK) cur_ = RANGE_PTBK;
 //if(oldr != cur_) printf("Moved:%d\t", cur_);
 
-	mod_ = MODIFIER[cur_];
-
 #ifdef DEBUG
 if(oldr != cur_) printf("Moved:%d\n", cur_);
 #endif
 }
 
-//--------------------- class hit, a stack of damage packets
+//----------------------------------------------------------------------------
+// class hit, a stack of damage packets
 // read, return top of stack
-int Hit::read(void)
+int Hit::read(void) const
 {
    return(damage[number-1]);
 }
@@ -137,15 +139,43 @@ void Hit::add(int d)
    memcpy(damage, h.damage, number*sizeof(int));
 }*/
 
+//----------------------------------------------------------------------------
+Battle::Battle(void)
+{
+	std::list<Ship> tmp;
+	tmp.push_back(Ship('I'));
+	forces.push_back(tmp);
+
+	tmp.clear();
+
+	tmp.push_back(Ship('B'));
+	forces.push_back(tmp);
+}
+
 void Battle::reset(void)
 {
+	for(std::list<Force>::iterator i= forces.begin(); i != forces.end(); ++i)
+	{
+		for(Force::iterator j = i->begin(); j != i->end(); ++j)
+		{
+			j->reset();
+		}
+	}
 }
 
 ///@return 0 Imps/1 Bugs/else draw
 int Battle::fight(void)
 {
-	Ship imp('I');
-	Ship bug('B');
-	return bug.fight(imp);
+	// can only handle two sides
+	assert( forces.size() == 2 );
+
+	Force &force1 = *forces.begin();
+	Force &force2 = *(++forces.begin());
+
+	// can only handle one ship per side
+	assert( force1.size() == 1 );
+	assert( force2.size() == 1 );
+
+	return force2.begin()->fight(*force1.begin());
 }
 

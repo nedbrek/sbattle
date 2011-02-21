@@ -6,29 +6,11 @@
 // header file, definitions and classes
 
 #include "ship.h"
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <ctime>
-
 #include <list>
 
 typedef std::list<Ship> Force;
 
-class Range;
-
 //#define DEBUG
-#ifdef DEBUG
-#define TRIALS 1
-#else
-#define TRIALS 5000
-#endif
-
-// Range actions
-const int RANGE_ADVN= 1; // advance
-const int RANGE_MNTN= 2; // maintain current range (counter-maneuver)
-const int RANGE_HOLD= 3; // hold position (don't move)
-const int RANGE_RTRT= 4; // retreat/disengage
 
 struct Analysis
 {
@@ -60,42 +42,27 @@ struct Analysis
 
    void round(int t)
    {
-      if( t == 0 ) impsWin++;
-      if( t == 1 ) bugsWin++;
+      if( t == 0 ) ++impsWin;
+      if( t == 1 ) ++bugsWin;
    }
 
-   void print(void)
-   {
-      printf("Imps: %d \t Bugs: %d, Draws: %d\n", 
-              impsWin, bugsWin, TRIALS - impsWin - bugsWin);
-      printf("Imps lost due to hull failure: %d\n", impsNoHull);
-      printf("Imps lost due to weapons failure: %d\n", impsNoWeap);
-      printf("Bugs lost due to hull failure: %d\n", bugsNoHull);
-      printf("Bugs lost due to weapons failure: %d\n", bugsNoWeap);
-      printf("Bugs lost due to weapons unable to breach enemy shields: %d\n", 
-              impsShieldRegen);
-      printf("Total number of rounds fought:%d Average: %f\n", sumRounds,
-             sumRounds/(double)TRIALS);
-   }
+	void print(void);
 };
 
 extern Analysis a;
 
-// stack of damage packets
+/// stack of damage packets
 struct Hit
 {
 protected:
+   int len;
    int *damage;
 
-public:
+public: // data
    int number;
-   int len;
 
-   void add(int d);
-   void remove(void);
-   int  read(void);
-
-   Hit(int ct = 0): damage(NULL), number(0), len(ct)
+public:
+   Hit(int ct = 0): len(ct), damage(NULL), number(0)
    {
       if( ct ) damage= new(int[ct]);
    }
@@ -105,12 +72,22 @@ public:
    {
       delete[] damage;
    }
+
+	/// add or remove a damage packet
+	void add(int d);
+   void remove(void);
+
+	/// get the current damage packet
+	int  read(void) const;
 };
 
-struct Battle
+class Battle
 {
+protected:
 	std::list<Force> forces;
-   Analysis a;
+
+public:
+	Battle(void);
 
    void reset(void);
 

@@ -1,4 +1,8 @@
 sbattle.exe
+sbattle.ncb
+sbattle.suo
+sbattle.vcproj.*
+Debug
 *.o
 *.d
 

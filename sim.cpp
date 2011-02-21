@@ -3,10 +3,32 @@
 // Simulation of space battles
 
 #include "sim.h"
+#include <ctime>
 
-Battle theBattle;
+#ifdef DEBUG
+#define TRIALS 1
+#else
+#define TRIALS 5000
+#endif
+
+//----------------------------------------------------------------------------
 Analysis a;
 
+void Analysis::print(void)
+{
+	printf("Imps: %d \t Bugs: %d, Draws: %d\n", 
+	         impsWin, bugsWin, TRIALS - impsWin - bugsWin);
+	printf("Imps lost due to hull failure: %d\n", impsNoHull);
+	printf("Imps lost due to weapons failure: %d\n", impsNoWeap);
+	printf("Bugs lost due to hull failure: %d\n", bugsNoHull);
+	printf("Bugs lost due to weapons failure: %d\n", bugsNoWeap);
+	printf("Bugs lost due to weapons unable to breach enemy shields: %d\n", 
+	    impsShieldRegen);
+	printf("Total number of rounds fought:%d Average: %f\n", sumRounds,
+	    sumRounds/(double)TRIALS);
+}
+
+//----------------------------------------------------------------------------
 void setup(char *f)
 {
 }
@@ -28,7 +50,9 @@ int main(int argc, char **argv)
    	setup(argv[1]);
 	}
 
-   for(int i = 0; i < TRIALS; i++)
+	Battle theBattle;
+
+	for(int i = 0; i < TRIALS; i++)
    {
 #ifdef DEBUG
 printf("Trial:%d", i);
