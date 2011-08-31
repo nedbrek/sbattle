@@ -6,6 +6,7 @@
 #include "sim.h"
 #include "range.h"
 #include <cassert>
+#include <cstdlib>
 
 //----------------------------------------------------------------------------
 namespace Results {

@@ -3,6 +3,7 @@
 // Simulation of space battles
 
 #include "sim.h"
+#include <cstdio>
 
 //----------------------------------------------------------------------------
 Analysis a;

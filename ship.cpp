@@ -1,6 +1,9 @@
 /// implementation of ship class
 #include "sim.h"
 #include "range.h"
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
 
 // Imperial Destroyer stats
 #define IMP_N "Imperial Destroyer"
