@@ -11,6 +11,9 @@
 typedef std::list<Ship> Force;
 
 //#define DEBUG
+#ifndef NULL
+#define NULL 0
+#endif
 
 struct Analysis
 {
