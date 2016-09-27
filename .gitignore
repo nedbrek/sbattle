@@ -6,4 +6,5 @@ sbattle.vcproj.*
 Debug
 *.o
 *.d
+/tmp.txt
 

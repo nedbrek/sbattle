@@ -28,9 +28,9 @@ $(LIB): $(OBJ) tclmain.o
 	@g++ $(LDFLAGS) -shared -o $@ sbattle.def $^ $(THIRDL)
 
 test: $(BIN)
-	@./$(BIN) --test > tmp
-	diff tmp gold.out.txt
+	@./$(BIN) --test > tmp.txt
+	diff tmp.txt gold.out.txt
 
 clean:
-	@rm -f $(BIN) $(OBJ)
+	@rm -f $(BIN) $(OBJ) main.o
 
